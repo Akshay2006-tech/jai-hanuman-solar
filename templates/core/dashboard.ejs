@@ -1,0 +1,77 @@
+<div class="container">
+    <h1 style="color: #4a7c2c; margin-bottom: 1.5rem;">Welcome, <%= user.username %>!</h1>
+    
+    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+        <div class="stat-card">
+            <h3><%= total_panels %></h3>
+            <p>Total Panels</p>
+        </div>
+        <div class="stat-card safe">
+            <h3><%= safe_count %></h3>
+            <p>Safe</p>
+        </div>
+        <div class="stat-card warning">
+            <h3><%= near_expiry_count %></h3>
+            <p>Near Expiry</p>
+        </div>
+        <div class="stat-card danger">
+            <h3><%= expired_count %></h3>
+            <p>Expired</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>Your Solar Panels</h2>
+            <a href="/add-panel" class="btn btn-success">+ Add Panel</a>
+        </div>
+    </div>
+
+    <% if (panels.length > 0) { %>
+        <div class="panel-list">
+            <% panels.forEach(panel => { %>
+            <div class="panel-item">
+                <div class="panel-info" style="flex: 1;">
+                    <h3><%= panel.brand %> - <%= panel.capacity_kw %>kW</h3>
+                    <p><strong>Location:</strong> <%= panel.location %></p>
+                    <p><strong>Installed:</strong> <%= panel.installation_date.toISOString().split('T')[0] %></p>
+                    <p><strong>Age:</strong> <%= panel.calculatedAge().toFixed(1) %> years</p>
+                    <p><strong>Expiry Year:</strong> <%= panel.expiryYear() %></p>
+                    <p><strong>Estimated Waste:</strong> <%= panel.estimatedWasteKg().toFixed(0) %> kg</p>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: <%= panel.remainingLifePercentage().toFixed(0) %>%;"></div>
+                    </div>
+                    <p><strong>Remaining Life:</strong> <%= panel.remainingLifePercentage().toFixed(1) %>%</p>
+                </div>
+                
+                <div style="text-align: center;">
+                    <% if (panel.expiryStatus() === 'safe') { %>
+                        <span class="badge badge-safe">Safe</span>
+                    <% } else if (panel.expiryStatus() === 'near_expiry') { %>
+                        <span class="badge badge-warning">Near Expiry</span>
+                    <% } else { %>
+                        <span class="badge badge-danger">Expired</span>
+                    <% } %>
+                    <br><br>
+                    <form method="POST" action="/delete-panel/<%= panel._id %>" style="display: inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Delete this panel?')">Delete</button>
+                    </form>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+    <% } else { %>
+        <div class="card">
+            <p>No solar panels registered yet. <a href="/add-panel">Add your first panel</a></p>
+        </div>
+    <% } %>
+
+    <% if (total_waste > 0) { %>
+    <div class="card">
+        <h2>Environmental Impact</h2>
+        <p><strong>Total Estimated Waste:</strong> <%= total_waste.toFixed(0) %> kg</p>
+        <p>Proper recycling can recover up to 95% of materials including silicon, glass, and metals.</p>
+    </div>
+    <% } %>
+</div>
