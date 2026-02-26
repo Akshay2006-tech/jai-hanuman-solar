@@ -1,0 +1,39 @@
+<div class="container">
+    <div class="card">
+        <h2>Authorized Recycling Industries</h2>
+        <p>Find verified recyclers near you</p>
+        
+        <form method="get" style="display: flex; gap: 1rem; margin-top: 1rem;">
+            <input type="text" name="location" placeholder="Search by location" value="<%= location %>" style="flex: 1; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;">
+            <select name="service" style="padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;">
+                <option value="">All Services</option>
+                <option value="recycling" <%= service === 'recycling' ? 'selected' : '' %>>Recycling</option>
+                <option value="refurbishing" <%= service === 'refurbishing' ? 'selected' : '' %>>Refurbishing</option>
+            </select>
+            <button type="submit" class="btn btn-success">Search</button>
+        </form>
+    </div>
+
+    <% if (recyclers.length > 0) { %>
+        <div class="recycler-grid">
+            <% recyclers.forEach(recycler => { %>
+            <div class="recycler-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3><%= recycler.name %></h3>
+                    <% if (recycler.verified) { %>
+                        <span class="verified-badge">✓ Verified</span>
+                    <% } %>
+                </div>
+                <p><strong>📍 Location:</strong> <%= recycler.location %></p>
+                <p><strong>📞 Contact:</strong> <%= recycler.contact_number %></p>
+                <p><strong>📧 Email:</strong> <%= recycler.email %></p>
+                <p><strong>🔧 Service:</strong> <%= recycler.service_type %></p>
+            </div>
+            <% }); %>
+        </div>
+    <% } else { %>
+        <div class="card">
+            <p>No recyclers found. Try adjusting your search criteria.</p>
+        </div>
+    <% } %>
+</div>
