@@ -14,7 +14,8 @@
     "express-ejs-layouts": "^2.5.1",
     "ejs": "^3.1.9",
     "nodemailer": "^6.9.7",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "mongoose": "^8.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

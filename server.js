@@ -2,12 +2,16 @@ const express = require('express');
 const session = require('express-session');
 const expressLayouts = require('express-ejs-layouts');
 const path = require('path');
-const Recycler = require('./models/Recycler');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
 const app = express();
 
-Recycler.seed();
+// Connect to MongoDB
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/solar-recycle';
+mongoose.connect(MONGODB_URI)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'templates'));
