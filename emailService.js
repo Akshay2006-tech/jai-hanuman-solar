@@ -80,13 +80,29 @@ async function sendWelcomeEmail(userEmail, username) {
     await resend.emails.send({
       from: fromEmail,
       to: userEmail,
-      subject: '🌞 Welcome to Solar Recycle Platform',
+      subject: '🌞 Welcome to Solar Recycle Platform - Registration Successful!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #2d9c5e;">Welcome ${username}!</h2>
-          <p>Thank you for joining Solar Recycle Platform.</p>
-          <p>Start tracking your solar panels and get automated expiry alerts.</p>
-          <a href="http://localhost:3000/dashboard" style="display: inline-block; background: #2d9c5e; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin-top: 10px;">Go to Dashboard</a>
+          <h2 style="color: #2d9c5e;">Welcome to Solar Recycle Platform, ${username}!</h2>
+          <p>Thank you for registering with us! Your account has been successfully created.</p>
+          
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+            <h3 style="color: #2d9c5e; margin-top: 0;">What you can do now:</h3>
+            <ul style="line-height: 1.6;">
+              <li>📊 Track your solar panels and monitor their lifecycle</li>
+              <li>⚠️ Get automated expiry alerts before panels need recycling</li>
+              <li>🔍 Find verified recyclers in your area</li>
+              <li>📈 View waste estimates and environmental impact</li>
+            </ul>
+          </div>
+          
+          <div style="margin: 30px 0;">
+            <a href="http://localhost:3000/dashboard" style="display: inline-block; background: #2d9c5e; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin-right: 10px;">Go to Dashboard</a>
+            <a href="http://localhost:3000/add-panel" style="display: inline-block; background: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px;">Add Your First Panel</a>
+          </div>
+          
+          <p style="font-size: 14px; color: #666; margin-top: 30px;">Need help? Check out our <a href="http://localhost:3000/how-it-works" style="color: #2d9c5e;">How It Works</a> guide or <a href="http://localhost:3000/contact" style="color: #2d9c5e;">contact us</a>.</p>
+          <p style="font-size: 12px; color: #666;">This is an automated welcome email from Solar Recycle Platform.</p>
         </div>
       `
     });
