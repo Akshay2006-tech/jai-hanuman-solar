@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/UserMongo');
 const SolarPanel = require('../models/SolarPanelMongo');
 const Recycler = require('../models/RecyclerMongo');
-const { sendExpiryAlert, sendWelcomeEmail } = require('../emailService');
+const { sendExpiryAlert, sendWelcomeEmail, sendAdminNotification } = require('../emailService');
 
 const isAuth = (req, res, next) => {
   if (req.session.user) return next();
@@ -24,6 +24,7 @@ router.post('/register', async (req, res) => {
     req.session.user = { id: user._id, username: user.username };
     req.session.messages = ['Registration successful!'];
     await sendWelcomeEmail(user.email, user.username);
+    await sendAdminNotification({ username: user.username, email: user.email, full_name: user.full_name });
     res.redirect('/dashboard');
   } catch (err) {
     req.session.messages = ['Registration failed: ' + err.message];
