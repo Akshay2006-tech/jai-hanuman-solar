@@ -4,8 +4,15 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
 const adminEmail = process.env.ADMIN_EMAIL;
 
+// Debug environment variables
+console.log('Environment variables loaded:');
+console.log('FROM_EMAIL:', fromEmail);
+console.log('ADMIN_EMAIL:', adminEmail);
+console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
+
 // Send admin notification when new user registers
 async function sendAdminNotification(userData) {
+  console.log('Admin email check:', adminEmail);
   if (!adminEmail) return { success: false, error: 'Admin email not configured' };
   
   try {
