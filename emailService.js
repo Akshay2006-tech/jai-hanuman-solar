@@ -1,14 +1,19 @@
-const { Resend } = require('resend');
+const nodemailer = require('nodemailer');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD
+  }
+});
+
+const fromEmail = process.env.GMAIL_USER || 'sunloop2026@gmail.com';
 const adminEmail = process.env.ADMIN_EMAIL || 'sunloop2026@gmail.com';
 
-// Debug environment variables
-console.log('Environment variables loaded:');
+console.log('Email service loaded with Gmail');
 console.log('FROM_EMAIL:', fromEmail);
 console.log('ADMIN_EMAIL:', adminEmail);
-console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
 
 // Send admin notification when new user registers
 async function sendAdminNotification(userData) {
@@ -16,7 +21,7 @@ async function sendAdminNotification(userData) {
   if (!adminEmail) return { success: false, error: 'Admin email not configured' };
   
   try {
-    await resend.emails.send({
+    await transporter.sendMail({
       from: fromEmail,
       to: adminEmail,
       subject: '🎉 New User Registration - Solar Recycle Platform',
@@ -49,7 +54,7 @@ async function sendExpiryAlert(userEmail, panelData) {
   const statusColor = isExpired ? '#dc3545' : '#ffc107';
   
   try {
-    await resend.emails.send({
+    await transporter.sendMail({
       from: fromEmail,
       to: userEmail,
       subject: `⚠️ Solar Panel ${isExpired ? 'EXPIRED' : 'Expiry Alert'}`,
@@ -92,7 +97,7 @@ async function sendWelcomeEmail(userEmail, username) {
   }
   
   try {
-    await resend.emails.send({
+    await transporter.sendMail({
       from: fromEmail,
       to: userEmail,
       subject: '🌞 Welcome to Solar Recycle Platform - Registration Successful!',
