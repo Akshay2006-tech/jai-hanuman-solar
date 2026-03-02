@@ -3,6 +3,7 @@ const session = require('express-session');
 const expressLayouts = require('express-ejs-layouts');
 const path = require('path');
 const mongoose = require('mongoose');
+const { startScheduler } = require('./scheduler');
 require('dotenv').config();
 
 const app = express();
@@ -36,4 +37,8 @@ app.use((req, res, next) => {
 app.use('/', require('./routes/index'));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+  // Start the email scheduler
+  startScheduler();
+});
