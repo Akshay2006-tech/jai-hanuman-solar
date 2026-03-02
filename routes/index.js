@@ -17,16 +17,49 @@ router.get('/contact', (req, res) => res.render('core/contact'));
 router.get('/recycling-guide', (req, res) => res.render('core/recycling_guide'));
 
 router.get('/register', (req, res) => res.render('registration/register'));
+
+// Test email route for debugging
+router.get('/test-email', async (req, res) => {
+  try {
+    const testResult = await sendWelcomeEmail('sunloop2026@gmail.com', 'TestUser');
+    res.json({ success: true, result: testResult });
+  } catch (error) {
+    res.json({ success: false, error: error.message });
+  }
+});
 router.post('/register', async (req, res) => {
   try {
+    console.log('Registration data:', req.body);
     const user = new User(req.body);
     await user.save();
+    console.log('User saved:', { id: user._id, username: user.username, email: user.email });
+    
     req.session.user = { id: user._id, username: user.username };
     req.session.messages = ['Registration successful!'];
-    await sendWelcomeEmail(user.email, user.username);
-    await sendAdminNotification({ username: user.username, email: user.email, full_name: user.full_name });
+    
+    // Send welcome email to user
+    try {
+      const welcomeResult = await sendWelcomeEmail(user.email, user.username);
+      console.log('Welcome email result:', welcomeResult);
+    } catch (emailErr) {
+      console.error('Welcome email failed:', emailErr);
+    }
+    
+    // Send admin notification
+    try {
+      const adminResult = await sendAdminNotification({ 
+        username: user.username, 
+        email: user.email, 
+        full_name: user.full_name 
+      });
+      console.log('Admin notification result:', adminResult);
+    } catch (emailErr) {
+      console.error('Admin notification failed:', emailErr);
+    }
+    
     res.redirect('/dashboard');
   } catch (err) {
+    console.error('Registration error:', err);
     req.session.messages = ['Registration failed: ' + err.message];
     res.redirect('/register');
   }
