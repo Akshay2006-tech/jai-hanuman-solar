@@ -2,6 +2,37 @@ const { Resend } = require('resend');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
+const adminEmail = process.env.ADMIN_EMAIL;
+
+// Send admin notification when new user registers
+async function sendAdminNotification(userData) {
+  if (!adminEmail) return { success: false, error: 'Admin email not configured' };
+  
+  try {
+    await resend.emails.send({
+      from: fromEmail,
+      to: adminEmail,
+      subject: '🎉 New User Registration - Solar Recycle Platform',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #2d9c5e;">New User Registered!</h2>
+          <p>A new user has registered on your Solar Recycle Platform:</p>
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+            <p><strong>Username:</strong> ${userData.username}</p>
+            <p><strong>Email:</strong> ${userData.email}</p>
+            <p><strong>Full Name:</strong> ${userData.full_name || 'Not provided'}</p>
+            <p><strong>Registration Date:</strong> ${new Date().toLocaleString()}</p>
+          </div>
+          <p style="font-size: 12px; color: #666; margin-top: 30px;">This is an automated notification from Solar Recycle Platform.</p>
+        </div>
+      `
+    });
+    return { success: true };
+  } catch (error) {
+    console.error('Admin notification error:', error);
+    return { success: false, error };
+  }
+}
 
 // Send expiry alert email
 async function sendExpiryAlert(userEmail, panelData) {
@@ -137,4 +168,4 @@ async function sendBatchExpiryAlert(userEmail, username, expiringPanels) {
   }
 }
 
-module.exports = { sendExpiryAlert, sendWelcomeEmail, sendBatchExpiryAlert };
+module.exports = { sendExpiryAlert, sendWelcomeEmail, sendBatchExpiryAlert, sendAdminNotification };
