@@ -13,7 +13,7 @@
     "express-session": "^1.17.3",
     "express-ejs-layouts": "^2.5.1",
     "ejs": "^3.1.9",
-    "@sendgrid/mail": "^8.1.0",
+    "resend": "^3.2.0",
     "node-cron": "^3.0.3",
     "dotenv": "^16.3.1",
     "mongoose": "^8.0.0"
