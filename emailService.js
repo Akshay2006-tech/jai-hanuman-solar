@@ -76,8 +76,15 @@ async function sendExpiryAlert(userEmail, panelData) {
 
 // Send welcome email
 async function sendWelcomeEmail(userEmail, username) {
+  console.log(`Attempting to send welcome email to: ${userEmail}`);
+  
+  if (!userEmail) {
+    console.error('No email provided for welcome email');
+    return { success: false, error: 'No email provided' };
+  }
+  
   try {
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: fromEmail,
       to: userEmail,
       subject: '🌞 Welcome to Solar Recycle Platform - Registration Successful!',
@@ -106,9 +113,10 @@ async function sendWelcomeEmail(userEmail, username) {
         </div>
       `
     });
-    return { success: true };
+    console.log('Welcome email sent successfully:', result);
+    return { success: true, result };
   } catch (error) {
-    console.error('Email error:', error);
+    console.error('Welcome email error:', error);
     return { success: false, error };
   }
 }
