@@ -2,7 +2,7 @@ const { Resend } = require('resend');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
-const adminEmail = process.env.ADMIN_EMAIL;
+const adminEmail = process.env.ADMIN_EMAIL || 'sunloop2026@gmail.com';
 
 // Debug environment variables
 console.log('Environment variables loaded:');
