@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/UserMongo');
 const SolarPanel = require('../models/SolarPanelMongo');
 const Recycler = require('../models/RecyclerMongo');
-const { sendExpiryAlert, sendWelcomeEmail, sendAdminNotification } = require('../emailService');
+const { sendExpiryAlert, sendWelcomeEmail, sendAdminNotification, checkAndSendExpiryAlerts } = require('../emailService');
 
 const isAuth = (req, res, next) => {
   if (req.session.user) return next();
@@ -23,6 +23,16 @@ router.get('/test-email', async (req, res) => {
   try {
     const testResult = await sendWelcomeEmail('sunloop2026@gmail.com', 'TestUser');
     res.json({ success: true, result: testResult });
+  } catch (error) {
+    res.json({ success: false, error: error.message });
+  }
+});
+
+// Manual expiry alert check route
+router.get('/check-expiry', async (req, res) => {
+  try {
+    const result = await checkAndSendExpiryAlerts();
+    res.json({ success: true, message: 'Expiry alert check completed', result });
   } catch (error) {
     res.json({ success: false, error: error.message });
   }
