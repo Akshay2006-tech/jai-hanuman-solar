@@ -1,25 +1,10 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD
-  },
-  tls: {
-    rejectUnauthorized: false
-  },
-  dnsOptions: {
-    family: 4
-  }
-});
-
-const fromEmail = process.env.GMAIL_USER || 'sunloop2026@gmail.com';
+const resend = new Resend(process.env.RESEND_API_KEY);
+const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
 const adminEmail = process.env.ADMIN_EMAIL || 'sunloop2026@gmail.com';
 
-console.log('Email service loaded with Gmail');
+console.log('Email service loaded with Resend');
 console.log('FROM_EMAIL:', fromEmail);
 console.log('ADMIN_EMAIL:', adminEmail);
 
@@ -29,7 +14,7 @@ async function sendAdminNotification(userData) {
   if (!adminEmail) return { success: false, error: 'Admin email not configured' };
   
   try {
-    await transporter.sendMail({
+    await resend.emails.send({
       from: fromEmail,
       to: adminEmail,
       subject: '🎉 New User Registration - Solar Recycle Platform',
@@ -62,7 +47,7 @@ async function sendExpiryAlert(userEmail, panelData) {
   const statusColor = isExpired ? '#dc3545' : '#ffc107';
   
   try {
-    await transporter.sendMail({
+    await resend.emails.send({
       from: fromEmail,
       to: userEmail,
       subject: `⚠️ Solar Panel ${isExpired ? 'EXPIRED' : 'Expiry Alert'}`,
@@ -105,7 +90,7 @@ async function sendWelcomeEmail(userEmail, username) {
   }
   
   try {
-    await transporter.sendMail({
+    await resend.emails.send({
       from: fromEmail,
       to: userEmail,
       subject: '🌞 Welcome to Solar Recycle Platform - Registration Successful!',
@@ -163,7 +148,7 @@ async function checkAndSendExpiryAlerts() {
         
         for (const panel of expiringPanels) {
           await sendExpiryAlert(user.email, panel);
-          await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay between emails
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
       }
     }
